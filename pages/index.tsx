@@ -1,22 +1,28 @@
 import React from "react"
 import { GetStaticProps } from "next"
 import Layout from "../components/Layout"
-import Post, { PostProps } from "../components/Post"
+import Post, { PostProps } from "components/Post"
+import prisma from 'data-store/prisma'
+
+/** this page can only be generated after fetching remote posts feed  at build time
+ * subsequent page requests will retrieve the feed from cache
+ * (SSG with data)
+ * so lets update the cashed posts feed 
+ * @revalidate after 60 seconds (ISR)
+ */
 
 export const getStaticProps: GetStaticProps = async () => {
-  const feed = [
-    {
-      id: 1,
-      title: "Prisma is the perfect ORM for Next.js",
-      content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-      published: false,
+  const feed = await prisma.post.findMany({
+    // A where filter is specified to include only Post records where published is true
+    where: { published: true },
+    include: {
       author: {
-        name: "Nikolas Burk",
-        email: "burk@prisma.io",
+        //The name of the author of the Post record is queried as well and will be included in the returned objects
+        select: { name: true },
       },
     },
-  ]
-  return { props: { feed } }
+  })
+  return { props: { feed },revalidate:60 }
 }
 
 type Props = {
@@ -30,26 +36,13 @@ const Blog: React.FC<Props> = (props) => {
         <h1>Public Feed</h1>
         <main>
           {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
-            </div>
+            
+              <Post key={post.id} post={post} />
+          
           ))}
         </main>
       </div>
-      <style jsx>{`
-        .post {
-          background: white;
-          transition: box-shadow 0.1s ease-in;
-        }
-
-        .post:hover {
-          box-shadow: 1px 1px 3px #aaa;
-        }
-
-        .post + .post {
-          margin-top: 2rem;
-        }
-      `}</style>
+    
     </Layout>
   )
 }

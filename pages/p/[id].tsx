@@ -1,20 +1,21 @@
 import React from "react"
 import { GetServerSideProps } from "next"
 import ReactMarkdown from "react-markdown"
-import Layout from "../../components/Layout"
-import { PostProps } from "../../components/Post"
+import Layout from "components/Layout"
+import { PostProps } from "components/Post"
+import prisma from 'data-store/prisma'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const post = {
-    id: 1,
-    title: "Prisma is the perfect ORM for Next.js",
-    content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-    published: false,
-    author: {
-      name: "Nikolas Burk",
-      email: "burk@prisma.io",
+  const post = await prisma.post.findUnique({
+    where: {
+      id: Number(params?.id) || -1,
     },
-  }
+    include: {
+      author: {
+        select: { name: true },
+      },
+    },
+  })
   return {
     props: post,
   }
@@ -59,3 +60,15 @@ const Post: React.FC<PostProps> = (props) => {
 }
 
 export default Post
+
+/** Why not ISR Here? 
+ * 
+ * getStaticProps should only be used for pages that do not require authentication. 
+ * The statically generated  pages will be publicly available via your server 
+ * and via a CDN if you have one. Therefore they cannot contain any personal 
+ * or sensitive data.
+
+Also, this is why there is no req and res objects for getStaticProps, 
+because the pages are generated at build time, not at runtime. And at build time,
+ there is no user http request to handle.
+*/
