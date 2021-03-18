@@ -16,9 +16,13 @@ export type PostProps = {
 
 const Post: React.FC<{ post: PostProps }> = ({ post }) => {
   const authorName = post.author ? post.author.name : "Unknown author";
+  //handle routing for published feed and drafts
+  const handleRouter = () => post.published ?
+    Router.push("/p/[id]", `/p/${post.id}`) :
+    Router.push("/d/[id]", `/d/${post.id}`)
   return (
     <div  className={style.post}>
-    <div onClick={() => Router.push("/p/[id]", `/p/${post.id}`)}>
+    <div onClick={handleRouter }>
       <h2>{post.title}</h2>
       <small>By {authorName}</small>
       <ReactMarkdown source={post.content} />

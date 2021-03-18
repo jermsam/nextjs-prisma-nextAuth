@@ -4,6 +4,7 @@ import Layout from "../components/Layout"
 import Post, { PostProps } from "components/Post"
 import prisma from 'data-store/prisma'
 
+
 /** this page can only be generated after fetching remote posts feed  at build time
  * subsequent page requests will retrieve the feed from cache
  * (SSG with data)
