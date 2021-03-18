@@ -86,7 +86,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
           while preserving fast builds and the benefits of Static
     * 
     */
-    fallback: 'blocking'
+    fallback: true
     /**{fallback: 'blocking'} means 
      *  new paths not returned by getStaticPaths will wait for the HTML 
      *  to be generated, identical to SSR (hence why blocking), 
