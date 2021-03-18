@@ -84,7 +84,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
           page will get the statically pre-rendered page.
           This ensures that users always have a fast experience 
           while preserving fast builds and the benefits of Static
-
     * 
     */
     fallback: 'blocking'
@@ -156,18 +155,15 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
           background: white;
           padding: 2rem;
         }
-
         .actions {
           margin-top: 2rem;
         }
-
         button {
           background: #ececec;
           border: 0;
           border-radius: 0.125rem;
           padding: 1rem 2rem;
         }
-
         button + button {
           margin-left: 1rem;
         }
@@ -184,7 +180,6 @@ export default Post
  * The statically generated  pages will be publicly available via your server 
  * and via a CDN if you have one. Therefore these donot contain any personal 
  * or sensitive data.
-
 Also, this is why there is no req and res objects for getStaticProps, 
 because the pages are generated at build time, not at runtime. And at build time,
  there is no user http request to handle.
